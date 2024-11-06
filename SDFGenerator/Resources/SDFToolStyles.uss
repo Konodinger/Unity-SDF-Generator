@@ -1,0 +1,31 @@
+TemplateContainer, #root
+{
+	flex-grow: 1;
+}
+
+#root
+{
+	flex-direction : row;
+}
+
+.base-panel
+{
+	margin: 4px;
+	padding: 3px;
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+.preview-panel
+{
+	flex-grow: 1;
+}
+
+#preview-header
+{
+	flex-direction: row;
+}
+
+.unity-base-slider__tracker
+{
+	background-color: gray;
+}

@@ -1,0 +1,107 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="root" style="flex-direction: row; align-items: center; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px;">
+        <ui:VisualElement name="left-panel" class="inspector-panel, base-panel" style="width: 33%; height: 100%; justify-content: center;">
+            <uie:ObjectField name="source-field" label="Source" />
+            <ui:VisualElement name="sdf-section" class="inspector-panel base-panel">
+                <uie:EnumFlagsField name="mode-field" label="Mode" tabindex="0" />
+                <ui:DropdownField label="Effective side" index="0" choices="Both sides, Inside only, Outside only" name="inside-outside-field" tooltip="Choose if you want to apply the sdf inside the shape, outside, or both at once. For the latter, a pixel value of 0.5 indicates the shape&apos;s border." />
+                <ui:Toggle name="invert-field" text="Invert values" />
+                <uie:IntegerField name="gradient-size-px-field" label="Gradient size pixel" />
+                <ui:Toggle name="resize-texture-sdf-field" text="Resize accordingly" tooltip="Resize texture according to the sdf gradient size." value="true" />
+                <ui:Toggle name="clamp-border-field" text="Clamp border during resizing" tooltip="Toggle this to use colors that are on the edge of the source image as reference colors for the border." value="false" />
+                <uie:ColorField label="Border color" value="#00000000" name="border-color-field" tooltip="Set the imposed color of the border. If your picture has a background color, it is recommended to use the same color for the border." />
+                <ui:Slider picking-mode="Ignore" label="Edge threshold" value="0.5" high-value="1" name="edge-value-field" show-input-field="true" style="height: 20px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="post-sdf-section" class="inspector-panel base-panel">
+                <ui:DropdownField label="Post-SDF effect" index="0" choices="None,Blur, Progressive blur,Max kernel,Min kernel" name="post-sdf-effect-field" />
+                <ui:SliderInt picking-mode="Ignore" label="Radius" value="1" high-value="50" name="post-sdf-effect-radius-field" low-value="1" show-input-field="true" focusable="false" style="display: none;" />
+                <ui:Toggle name="resize-texture-post-sdf-field" value="true" text="Resize accordingly" tooltip="Resize texture according to the post-sdf radius." style="display: none;" />
+            </ui:VisualElement>
+            <uie:Vector2Field name="image-size-ratio-field" text="Image size ratio" label="Resizing ratio" />
+            <ui:Toggle name="auto-generate-field" value="false" tooltip="Will automatically generate the SDF if a source is provided. Might be laggy on big texture." text="Auto generate" />
+            <ui:Toggle name="open-renderdoc-generation-field" value="false" text="Open RenderDoc on generation" />
+            <ui:VisualElement name="source-preview" class="preview-panel base-panel" style="align-items: center; height: auto; flex-grow: 1;">
+                <ui:Label text="Source image" display-tooltip-when-elided="true" name="source-image-label" style="font-size: 14px; -unity-font-style: bold;" />
+                <ui:Label text="-" display-tooltip-when-elided="true" name="source-image-size-field" style="font-size: 12px; -unity-font-style: normal; color: rgb(171, 171, 171);" />
+                <ui:VisualElement name="source-preview-channels" style="flex-direction: row; height: 22px; width: 67px; align-items: auto; justify-content: center;">
+                    <uie:ToolbarToggle focusable="false" label=" R" name="source-preview-channel-r" value="true" style="width: 40%; flex-direction: column;" />
+                    <uie:ToolbarToggle focusable="false" label=" G" name="source-preview-channel-g" value="true" style="width: 40%; flex-direction: column;" />
+                    <uie:ToolbarToggle focusable="false" label=" B" name="source-preview-channel-b" value="true" style="width: 40%; flex-direction: column;" />
+                    <uie:ToolbarToggle focusable="false" label=" A" name="source-preview-channel-a" value="true" style="width: 40%; flex-direction: column;" />
+                </ui:VisualElement>
+                <ui:Image name="source-view" class="view" style="width: 100%; height: 100%;" />
+            </ui:VisualElement>
+            <ui:Button text="Generate" name="generate-button" style="height: 20px;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="middle-panel" class="inspector-panel, base-panel" style="width: 33%; height: 100%; justify-content: center;">
+            <ui:VisualElement name="preview-header" style="flex-direction: row; height: 100px; width: 100%;">
+                <ui:VisualElement name="texture-infos" class="preview-panel base-panel" style="height: 100%; width: 50%; flex-direction: column;">
+                    <ui:VisualElement name="pixel-selected">
+                        <ui:Label text="Pixel hovered" display-tooltip-when-elided="true" name="pixel-hovered-label" style="-unity-font-style: bold; font-size: 14px;" />
+                        <uie:Vector2Field label="Position" name="pixel-position-field" x="-1" y="-1" />
+                        <uie:ColorField value="#00000000" show-eye-dropper="false" picking-mode="Ignore" hdr="false" name="pixel-color-field" label="Color" style="height: auto; width: auto; align-items: auto; justify-content: flex-start;" />
+                        <ui:VisualElement name="current-color-value-field" style="flex-direction: row; justify-content: center; align-items: stretch;">
+                            <uie:FloatField value="42,2" readonly="true" name="current-color-value-field-r" style="height: auto; width: 22%; justify-content: flex-start; flex-direction: column;" />
+                            <uie:FloatField value="42,2" readonly="true" name="current-color-value-field-g" style="height: auto; width: 22%; justify-content: flex-start; flex-direction: column;" />
+                            <uie:FloatField value="42,2" readonly="true" name="current-color-value-field-b" style="height: auto; width: 22%; justify-content: flex-start; flex-direction: column;" />
+                            <uie:FloatField value="42,2" readonly="true" name="current-color-value-field-a" style="height: auto; width: 22%; justify-content: flex-start; flex-direction: column;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:GroupBox />
+            <ui:VisualElement name="generated-preview" class="preview-panel base-panel" style="align-items: center; height: auto; flex-grow: 1;">
+                <ui:Label text="Generated image" display-tooltip-when-elided="true" name="generated-image-label" style="font-size: 14px; -unity-font-style: bold;" />
+                <ui:Label text="-" display-tooltip-when-elided="true" name="generated-image-size-field" style="font-size: 12px; -unity-font-style: normal; color: rgb(171, 171, 171);" />
+                <ui:VisualElement name="generated-preview-channels" style="flex-direction: row; height: 22px; width: 67px; align-items: auto; justify-content: center;">
+                    <uie:ToolbarToggle focusable="false" label=" R" name="generated-preview-channel-r" value="true" style="width: 40%; flex-direction: column;" />
+                    <uie:ToolbarToggle focusable="false" label=" G" name="generated-preview-channel-g" value="true" style="width: 40%; flex-direction: column;" />
+                    <uie:ToolbarToggle focusable="false" label=" B" name="generated-preview-channel-b" value="true" style="width: 40%; flex-direction: column;" />
+                    <uie:ToolbarToggle focusable="false" label=" A" name="generated-preview-channel-a" value="true" style="width: 40%; flex-direction: column;" />
+                </ui:VisualElement>
+                <ui:Image name="generated-view" class="view" style="width: 100%; height: 100%;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="save-panel" style="flex-grow: 0; flex-direction: row; width: 100%; align-items: flex-start; justify-content: center; align-self: auto; flex-shrink: 0; height: 22px;">
+                <ui:Button text="Save" parse-escape-sequences="false" display-tooltip-when-elided="false" name="save-button" style="width: 48%; height: auto;" />
+                <ui:Button text="Save as" parse-escape-sequences="false" display-tooltip-when-elided="false" name="save-as-button" style="width: 48%; height: auto;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="right-panel" class="inspector-panel base-panel" style="width: 33%; height: 100%; justify-content: center;">
+            <ui:Toggle name="super-keep-source-toggle" text="Use same source" value="true" />
+            <uie:ObjectField name="super-new-source-field" label="New source" style="display: none;" />
+            <ui:VisualElement name="super-texture-parameters" style="flex-direction: row; justify-content: space-around;">
+                <ui:VisualElement name="super-source-parameters" style="width: 48%; align-items: center;">
+                    <ui:Toggle text="Source" name="super-source-on-field" />
+                    <ui:VisualElement name="super-source-scaling" style="flex-direction: row; justify-content: space-between; align-items: center; width: 80%;">
+                        <ui:Label text="Source scaling" display-tooltip-when-elided="true" name="super-source-scaling-label" style="width: auto;" />
+                        <uie:Vector2Field name="super-source-scaling-field" x="1" y="1" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-start;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="super-source-offset" style="flex-direction: row; justify-content: space-between; align-items: center; width: 80%;">
+                        <ui:Label text="Source offset" display-tooltip-when-elided="true" name="super-source-offset-label" style="width: auto;" />
+                        <uie:Vector2Field name="super-source-offset-field" x="0" y="0" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-start;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="super-generated-parameters" style="width: 48%; align-items: center;">
+                    <ui:Toggle text="SDF" name="super-generated-on-field" />
+                    <ui:DropdownField index="3" choices="R, G, B, A" name="super-generated-channel-field" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:DropdownField label="Blending" index="0" choices="Source over SDF,SDF over source,Mean" name="super-blending-mode-field" />
+            <uie:ColorField label="SDF color" value="#FFEB04FF" name="super-sdf-color-field" />
+            <uie:FloatField label="SDF intensity" value="1" name="super-sdf-intensity-field" />
+            <ui:Toggle name="auto-superpose-field" value="false" tooltip="Will automatically superpose the source and the SDF. Might be laggy on big texture." text="Auto superpose" />
+            <ui:Toggle name="open-renderdoc-superposition-field" value="false" text="Open RenderDoc on superposition" />
+            <ui:VisualElement name="superposition-preview" class="preview-panel base-panel" style="align-items: center; height: auto; flex-grow: 1;">
+                <ui:Label text="Superposition image" display-tooltip-when-elided="true" name="superposition-image-label" style="font-size: 14px; -unity-font-style: bold;" />
+                <ui:VisualElement name="superposition-preview-channels" style="flex-direction: row; height: 22px; width: 67px; align-items: auto; justify-content: center;">
+                    <uie:ToolbarToggle focusable="false" label=" R" name="superposition-preview-channel-r" value="true" style="width: 40%; flex-direction: column;" />
+                    <uie:ToolbarToggle focusable="false" label=" G" name="superposition-preview-channel-g" value="true" style="width: 40%; flex-direction: column;" />
+                    <uie:ToolbarToggle focusable="false" label=" B" name="superposition-preview-channel-b" value="true" style="width: 40%; flex-direction: column;" />
+                    <uie:ToolbarToggle focusable="false" label=" A" name="superposition-preview-channel-a" value="true" style="width: 40%; flex-direction: flex-start;" />
+                </ui:VisualElement>
+                <ui:Image name="superposition-view" class="view" style="width: 100%; height: 100%;" />
+            </ui:VisualElement>
+            <ui:Button text="Superpose" display-tooltip-when-elided="false" name="superpose-button" style="height: 20px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
